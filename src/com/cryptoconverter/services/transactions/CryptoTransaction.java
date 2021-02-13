@@ -14,16 +14,16 @@ public class CryptoTransaction {
     private LocalDateTime transactionTime;
 
 
-    public CryptoTransaction(Double boughtPrice, Currency currency, double amount) {
+    public CryptoTransaction(Double boughtPrice, Currency currency, double currencyAmount) {
         this.boughtPrice = boughtPrice;
-        this.currencyAmount = amount;
+        this.currencyAmount = currencyAmount;
         this.currency = currency;
         transactionTime = LocalDateTime.now();
     }
 
 
-    public void removeAmount(double amount) {
-        this.currencyAmount -= amount;
+    public void removeAmount(double currencyAmount) {
+        this.currencyAmount -= currencyAmount;
     }
 
     public double getCurrencyAmount() {
@@ -50,11 +50,7 @@ public class CryptoTransaction {
      * @return investment value
      */
 
-    //TODO: Add colors to this
-    /*public static void main(String[] args) {
-        System.out.print("\033[31mERROR  \033[0m");
-        System.out.println("\u001B[32m Good \\u001B[0m");
-    }*/
+
     public double calculateDifference() {
         return currency.getCurrentPrice() - boughtPrice;
     }

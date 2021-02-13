@@ -44,13 +44,13 @@ public class VirtualWallet {
      * Also remove the currency from the wallet.
      * If amount is bigger than amount of currencies present then all the currencies are sold.
      *
-     * @param amount
+     * @param sellAmount
      * @param currencyName
      */
 
-    //TODO: Redo logic  amount = unit of coin you want to sell
-    public void sellCurrency(double amount, String currencyName) {
-        if (amount < 0) {
+
+    public void sellCurrency(double sellAmount, String currencyName) {
+        if (sellAmount < 0) {
             throw new IllegalArgumentException("Invalid amount!");
         }
 
@@ -63,18 +63,18 @@ public class VirtualWallet {
         List<CryptoTransaction> currencies = nameToTransaction.get(currencyName);
         Iterator<CryptoTransaction> iterator = currencies.listIterator();
 
-        while (iterator.hasNext() && amount > 0) {
+        while (iterator.hasNext() && sellAmount > 0) {
             CryptoTransaction transaction = iterator.next();
 
             double transactionAmount = transaction.getCurrencyAmount();
-            if (transactionAmount <= amount) {
-                amount -= transactionAmount;
+            if (transactionAmount <= sellAmount) {
+                sellAmount -= transactionAmount;
                 cashAmount += transactionAmount * transaction.getCurrentPrice();
                 iterator.remove();
             } else {
-                transaction.removeAmount(amount);
-                cashAmount += amount * transaction.getCurrentPrice();
-                amount = 0;
+                transaction.removeAmount(sellAmount);
+                cashAmount += sellAmount * transaction.getCurrentPrice();
+                sellAmount = 0;
             }
 
         }
@@ -148,6 +148,8 @@ public class VirtualWallet {
      *
      * @return String containing summary
      */
+
+
     public String getWalletSummary() {
 
         StringBuilder result = new StringBuilder();
@@ -161,6 +163,7 @@ public class VirtualWallet {
                 result.append(transaction.getTransactionSummary());
             }
         }
+
 
         return result.toString();
 

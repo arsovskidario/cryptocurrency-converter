@@ -81,9 +81,60 @@ public class VirtualWalletTest {
 
     }
 
-    //TODO: Test sell
-    //TODO: Test updateCurrencies
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSellCurrencyInvalidAmount() {
+        wallet.sellCurrency(-23.0, "BTC");
+    }
+
+    @Test(expected = CurrencyNotPresentException.class)
+    public void testSellCurrencyInvalidCurrencyName() {
+        wallet.sellCurrency(10, "DOGARIOUS");
+    }
+
+    @Test
+    public void testSellCurrencyValidOperation() {
+
+        wallet.depositCash(200.0);
+        wallet.buyCurrency(200.0, "BTC");
 
 
+        String[] lines = wallet.getWalletSummary().split(System.lineSeparator());
+        double amountBought = Double.parseDouble(lines[3].split("Amount: ")[1]);
+        double resultAmount = amountBought / 2;
+        wallet.sellCurrency(resultAmount, "BTC");
+
+        lines = wallet.getWalletSummary().split(System.lineSeparator());
+        double amountLeft = Double.parseDouble(lines[3].split("Amount: ")[1]);
+
+
+        assertEquals(0, Double.compare(amountLeft, resultAmount));
+
+    }
+
+    @Test
+    public void testSellCurrencyFullAmount() {
+        wallet.depositCash(150);
+        wallet.buyCurrency(75, "BTC");
+        wallet.buyCurrency(75, "BTC");
+
+        wallet.sellCurrency(1, "BTC");
+
+
+        String[] lines = wallet.getWalletSummary().split(System.lineSeparator());
+
+        assertEquals(1, lines.length);
+    }
+
+
+    @Test
+    public void testGetWalletOVerallSummary() {
+        wallet.depositCash(150);
+        wallet.buyCurrency(75, "BTC");
+        String[] lines = wallet.getWalletOverallSummary().split(System.lineSeparator());
+
+        assertTrue(lines[1].contains("Cash balance: 75"));
+        assertTrue(lines[3].contains("Currency name: Bitcoin"));
+    }
 
 }
