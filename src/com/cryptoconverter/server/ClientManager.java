@@ -126,6 +126,7 @@ class ClientManager {
     }
 
     public static void disconnectUser(SocketChannel channel) throws IOException {
+        System.out.println("Client stopped communication...");
         loggedInUsers.remove(channel);
         channel.close();
     }

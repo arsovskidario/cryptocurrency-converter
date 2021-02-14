@@ -24,7 +24,7 @@ public class Server {
     private boolean isRunning;
     private Selector selector;
 
-    private static final int BUFFER_SIZE = 1024;
+    private static final int BUFFER_SIZE = 4096;
     private static ByteBuffer buffer = ByteBuffer.allocateDirect(BUFFER_SIZE);
 
     public Server(int port) {
@@ -40,7 +40,7 @@ public class Server {
 
             selector = Selector.open();
             serverChannel.register(selector, SelectionKey.OP_ACCEPT);
-
+            System.out.println("Server started...");
             while (isRunning) {
                 int readyChannels = selector.select();
                 if (readyChannels == 0) {
@@ -82,12 +82,16 @@ public class Server {
 
                         byte[] byteArray = new byte[buffer.remaining()];
                         buffer.get(byteArray);
-                        String clientReply = new String(byteArray, "UTF-8");
+                        String clientReply = new String(byteArray, StandardCharsets.UTF_8);
                         clientReply = clientReply.replace(System.lineSeparator(), "");
+
+                        System.out.println("Received " + clientReply);
 
                         List<String> tokenizedBuffer = Arrays.asList(clientReply.split(" "));
 
                         String serverResponse = CommandParser.parseInput(tokenizedBuffer, clientChannel);
+
+                        System.out.println("Will send " + serverResponse);
 
                         buffer.clear();
                         buffer.put(serverResponse.getBytes(StandardCharsets.UTF_8));

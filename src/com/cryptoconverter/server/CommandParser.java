@@ -1,5 +1,8 @@
 package com.cryptoconverter.server;
 
+import com.cryptoconverter.server.services.exceptions.CurrencyNotPresentException;
+import com.cryptoconverter.server.services.exceptions.InsufficientCashForPurchaseException;
+
 import java.nio.channels.SocketChannel;
 import java.util.List;
 
@@ -93,9 +96,27 @@ class CommandParser {
                 }
 
                 if (ClientManager.hasSession(channel)) {
+
+                    if (!input.get(1).contains("--offering") || !input.get(2).contains("--money")) {
+                        serverResponse = "[ Invalid arguments ]";
+                        break;
+                    }
+
                     String name = input.get(1).split("=")[1];
-                    double amount = Double.parseDouble(input.get(2).split("=")[1]);
-                    serverResponse = ClientManager.buyCurrency(channel, name, amount);
+                    String numberAmount = input.get(2).split("=")[1];
+                    if (!numberAmount.matches("^[0-9\\.]*$")) {
+                        serverResponse = "[ Invalid arguments ]";
+                        break;
+                    }
+
+                    double amount = Double.parseDouble(numberAmount);
+
+                    try {
+                        serverResponse = ClientManager.buyCurrency(channel, name, amount);
+                    } catch (InsufficientCashForPurchaseException e) {
+                        serverResponse = "[ Insufficient cash amount for purchase ]";
+                    }
+
                 } else {
                     serverResponse = "[ You are not logged in! ]";
                 }
@@ -108,9 +129,24 @@ class CommandParser {
                 }
 
                 if (ClientManager.hasSession(channel)) {
+                    if (!input.get(1).contains("--offering") || !input.get(2).contains("--amount")) {
+                        serverResponse = "[ Invalid arguments ]";
+                        break;
+                    }
+
                     String name = input.get(1).split("=")[1];
-                    double amount = Double.parseDouble(input.get(2).split("=")[1]);
-                    serverResponse = ClientManager.sellCurrency(channel, name, amount);
+                    String numberAmount = input.get(2).split("=")[1];
+                    if (!numberAmount.matches("^[0-9\\.]*$")) {
+                        serverResponse = "[ Invalid arguments ]";
+                        break;
+                    }
+                    double amount = Double.parseDouble(numberAmount);
+
+                    try {
+                        serverResponse = ClientManager.sellCurrency(channel, name, amount);
+                    } catch (CurrencyNotPresentException e) {
+                        serverResponse = "[ Currency is not present in your wallet ]";
+                    }
                 } else {
                     serverResponse = "[ You are not logged in! ]";
                 }

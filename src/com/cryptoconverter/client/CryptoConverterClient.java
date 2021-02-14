@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class CryptoConverterClient {
     private static final String HOST_NAME = "localhost";
-    private static final int BUFFER_SIZE = 1024;
+    private static final int BUFFER_SIZE = 4096;
     private static ByteBuffer buffer = ByteBuffer.allocateDirect(BUFFER_SIZE);
 
     private boolean isRunning;
@@ -54,14 +54,17 @@ public class CryptoConverterClient {
     }
 
     private void printResponseFromServer() throws IOException {
+
+        //TODO: Buffer get ?
         buffer.clear();
         socketChannel.read(buffer);
         buffer.flip();
 
         byte[] byteArray = new byte[buffer.remaining()];
-        String reply = new String(byteArray, StandardCharsets.UTF_8);
+        buffer.get(byteArray);
+        String reply = new String(byteArray, StandardCharsets.UTF_8); // buffer drain
 
-        System.out.printf("%s", reply);
+        System.out.println(reply);
 
     }
 
