@@ -1,15 +1,20 @@
 package com.cryptoconverter.server;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
 
 public class Server {
-    //TODO: Responsible for running server and parsing commands
-
     private int port;
     private static final String HOST_NAME = "localhost";
 
@@ -27,27 +32,82 @@ public class Server {
     }
 
     public void start() {
-        //TODO: Handle disconnect client here
+        try (ServerSocketChannel serverChannel = ServerSocketChannel.open();) {
+            serverChannel.bind(new InetSocketAddress(HOST_NAME, port));
+            serverChannel.configureBlocking(false);
 
-    /*    protected void disconnectClient(ByteBuffer buffer, SocketChannel clientChannel){
+            selector = Selector.open();
+            serverChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-            String serverResponse = "[ Disconnected from server ]";
+            while (isRunning) {
+                int readyChannels = selector.select();
+                if (readyChannels == 0) {
+                    continue;
+                }
+
+                //Get selector keys and iterate over them
+
+                Set<SelectionKey> keys = selector.selectedKeys();
+                Iterator<SelectionKey> iterator = keys.iterator();
+                while (iterator.hasNext()) {
+                    SelectionKey key = iterator.next();
+
+                    // Register client
+                    if (key.isAcceptable()) {
+
+                        //Get server channel that is linked to selector
+                        ServerSocketChannel channel = (ServerSocketChannel) key.channel();
+
+                        //Server accepts connection and that connection is registered in selector
+                        SocketChannel socketChannel = channel.accept();
+                        socketChannel.configureBlocking(false);
+                        socketChannel.register(selector, SelectionKey.OP_READ);
+                    } else if (key.isReadable()) {
+                        SocketChannel clientChannel = (SocketChannel) key.channel();
+
+                        buffer.clear();
+                        int rd = clientChannel.read(buffer);
+                        if (rd < 0) {
+                            System.out.println("[ Client stopped communication ]");
+                            ClientManager.disconnectUser(clientChannel);
+                            continue;
+                        }
+
+                        buffer.flip(); // ready for read
 
 
-            serverResponse = serverResponse + System.lineSeparator();
-            try {
-                buffer.clear();
-                buffer.put(serverResponse.getBytes("UTF-8"));
-                buffer.flip();
-                clientChannel.write(buffer);
-                // If user forgets to logout log him out
-                loggedInChannels.remove(clientChannel);
-                clientChannel.close();
-            } catch (IOException e) {
-                System.out.println("Failed to close client socked");
-                e.printStackTrace();
-            }*/
+                        // Convert buffer to string
+
+                        byte[] byteArray = new byte[buffer.remaining()];
+                        buffer.get(byteArray);
+                        String clientReply = new String(byteArray, "UTF-8");
+                        clientReply = clientReply.replace(System.lineSeparator(), "");
+
+                        List<String> tokenizedBuffer = Arrays.asList(clientReply.split(" "));
+
+                        String serverResponse = CommandParser.parseInput(tokenizedBuffer, clientChannel);
+
+                        buffer.clear();
+                        buffer.put(serverResponse.getBytes(StandardCharsets.UTF_8));
+
+                        buffer.flip();
+                        clientChannel.write(buffer);
+
+                        if (tokenizedBuffer.get(0).contains("disconnect")) {
+                            ClientManager.disconnectUser(clientChannel);
+                        }
+
+                    }
+
+                    iterator.remove();
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println("Server crashed " + e);
         }
+
+    }
 
     public void stop() {
         this.isRunning = false;
@@ -58,24 +118,5 @@ public class Server {
         }
     }
 
-    private void parseInput(String input) {
-        List<String> commands = Arrays.asList(input.split(" "));
-        String commandName = commands.get(0).toLowerCase();
-        switch (commandName) {
-            case "register" -> registerUser(input);
-            case "login" -> loginUser(input);
-            case "help" -> displayHelp();
-            case "deposit-money" ->  // Has to be logedin first
-            case "list-offerings" -> ;
-            case "buy" -> ;
-            case "sell" -> ;
-            case "get-wallet-summary"
-                ;
-            case "get-wallet-overall-summary"
-                ;
-                case "disconnect" -> ;
-                default -> break;
 
-        }
-    }
 }

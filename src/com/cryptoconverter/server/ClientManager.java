@@ -2,15 +2,12 @@ package com.cryptoconverter.server;
 
 import com.cryptoconverter.server.services.wallet.VirtualWallet;
 
-
-import java.nio.ByteBuffer;
+import java.io.IOException;
 import java.nio.channels.SocketChannel;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 class ClientManager {
-
-    //TODO: For user authentication only
-
     private static Map<String, String> credentials = new HashMap<>();
     private static Map<String, VirtualWallet> userWallets = new HashMap<>();
     private static Map<SocketChannel, String> loggedInUsers = new HashMap<>();
@@ -38,6 +35,7 @@ class ClientManager {
                         + " select another one ]";
             } else {
                 credentials.put(username, password);
+                userWallets.put(username, new VirtualWallet());
                 serverResponse = "[ Username " + username + " successfully registered ]";
             }
         }
@@ -60,7 +58,6 @@ class ClientManager {
             serverResponse = "[ Invalid username/password combination ]";
         } else {
             loggedInUsers.put(clientChannel, username);
-            userWallets.put(username, new VirtualWallet());
             serverResponse = "[ User " + username + " successfully logged in ]";
 
         }
@@ -79,7 +76,7 @@ class ClientManager {
         return loggedInUsers.containsKey(channel);
     }
 
-    public String logoutUser(SocketChannel channel) {
+    public static String logoutUser(SocketChannel channel) {
         loggedInUsers.remove(channel);
         return "[ Successfully logged out ]";
     }
@@ -89,7 +86,7 @@ class ClientManager {
     // User is loged in below methods
 
 
-    public String depositMoney(SocketChannel channel, double cashAmount) {
+    public static String depositMoney(SocketChannel channel, double cashAmount) {
         VirtualWallet wallet = getUserWallet(channel);
         wallet.depositCash(cashAmount);
 
@@ -97,42 +94,46 @@ class ClientManager {
 
     }
 
-    public String buyCurrency(SocketChannel channel, String name, double amount) {
+    public static String buyCurrency(SocketChannel channel, String name, double amount) {
         VirtualWallet wallet = getUserWallet(channel);
         wallet.buyCurrency(amount, name);
 
         return "[ Successfully bought " + amount + " of " + name + " ]";
     }
 
-    public String sellCurrency(SocketChannel channel, String name, double amount) {
+    public static String sellCurrency(SocketChannel channel, String name, double amount) {
         VirtualWallet wallet = getUserWallet(channel);
         wallet.sellCurrency(amount, name);
 
         return "[ Successfully sold " + amount + " of " + name + " ]";
     }
 
-    public void listOfferings(SocketChannel channel) {
+    public static String listOfferings(SocketChannel channel) {
         VirtualWallet wallet = getUserWallet(channel);
-        wallet.listOfferings();
+        return wallet.listOfferings();
 
     }
 
-    public void getWalletSummary(SocketChannel channel) {
+    public static String getWalletSummary(SocketChannel channel) {
         VirtualWallet wallet = getUserWallet(channel);
-        wallet.getWalletSummary();
+        return wallet.getWalletSummary();
     }
 
 
-    public void getWalletOverallSummary(SocketChannel channel) {
+    public static String getWalletOverallSummary(SocketChannel channel) {
         VirtualWallet wallet = getUserWallet(channel);
-        wallet.getWalletOverallSummary();
+        return wallet.getWalletOverallSummary();
     }
 
-    private VirtualWallet getUserWallet(SocketChannel channel) {
+    public static void disconnectUser(SocketChannel channel) throws IOException {
+        loggedInUsers.remove(channel);
+        channel.close();
+    }
+
+    private static VirtualWallet getUserWallet(SocketChannel channel) {
         String username = loggedInUsers.get(channel);
         return userWallets.get(username);
     }
-
 
 
 }
