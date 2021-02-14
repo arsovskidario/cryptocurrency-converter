@@ -15,6 +15,8 @@ import java.util.Set;
 
 
 public class Server {
+    //TODO: Save user data to File
+    // Save CurrencyUpdate and time modified to file
     private int port;
     private static final String HOST_NAME = "localhost";
 

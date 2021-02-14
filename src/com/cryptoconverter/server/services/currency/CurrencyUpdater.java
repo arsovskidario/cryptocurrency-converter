@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,9 @@ public class CurrencyUpdater {
     private static final String HOST_NAME = "www.coinapi.io";
     private static final String HTTP_REQUEST = "GET /v1/assets/";
 
+    private static LocalDateTime lastModified = null;
+
+
     static Map<String, Currency> nameToCurrency = new HashMap<>();
 
 
@@ -32,6 +36,8 @@ public class CurrencyUpdater {
      */
     public static void initializeCurrencies() {
         try {
+            lastModified = LocalDateTime.now();
+
             List<CurrencyData> currencyData = sendRequest();
             for (CurrencyData data : currencyData) {
                 nameToCurrency.put(data.getAsset_id(),
@@ -48,6 +54,8 @@ public class CurrencyUpdater {
      */
     public static void updateCurrencies() {
         try {
+            lastModified = LocalDateTime.now();
+
             List<CurrencyData> currencyData = sendRequest();
             for (CurrencyData data : currencyData) {
                 Currency currency = nameToCurrency.get(data.getAsset_id());
@@ -88,6 +96,7 @@ public class CurrencyUpdater {
 
         return data.stream()
                 .filter(CurrencyData::isCrypto)
+                .limit(50)
                 .collect(Collectors.toList());
 
     }
@@ -99,6 +108,10 @@ public class CurrencyUpdater {
         }
 
         return result;
+    }
+
+    public static LocalDateTime getLastModified() {
+        return lastModified;
     }
 
 

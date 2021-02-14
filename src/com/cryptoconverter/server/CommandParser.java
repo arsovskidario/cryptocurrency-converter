@@ -10,6 +10,17 @@ class CommandParser {
     private static final int BUY_PARAMS_LIMIT = 3;
     private static final int SELL_PARAMS_LIMIT = 3;
 
+    private static final String helpMessage = "register <username> <password> =>  register to the server" + System.lineSeparator() +
+            "login <username> <password> => login to server " + System.lineSeparator() +
+            "logout =>  active user can logout" + System.lineSeparator() +
+            "deposit-money <amount> => deposit money to your wallet" + System.lineSeparator() +
+            "list-offerings => show top 50 offerings for cryptocurrencies" + System.lineSeparator() +
+            "get-wallet-summary => shows information about each of your transaction (purchase time, bought price, current price)" + System.lineSeparator() +
+            "get-wallet-overall-summary => shows details about the profit/lost based on all transactions" + System.lineSeparator() +
+            "buy --offering=<offering_code> --money=<amount>  => buy currency with <offering_code> (asset_id) for <amount> of money" + System.lineSeparator() +
+            "sell --offering=<offering_code> --quantity=<amount> => sell <amount> of currency with <offering_code> (asset_id)" + System.lineSeparator() +
+            "disconnect => disconnect current session";
+
 
     public static String parseInput(List<String> input, SocketChannel channel) {
         String serverResponse = "[ Unknown command ]";
@@ -17,6 +28,10 @@ class CommandParser {
         int inputSize = input.size();
         String commandName = input.get(0).toLowerCase();
         switch (commandName) {
+            case "help" -> {
+                serverResponse = helpMessage;
+            }
+
             case "register" -> {
                 if (inputSize == REGISTER_PARAMS_LIMIT) {
                     serverResponse = ClientManager.registerUser(input.get(1), input.get(2));

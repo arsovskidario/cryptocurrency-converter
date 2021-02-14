@@ -20,7 +20,6 @@ import java.util.HashMap;
 public class VirtualWallet {
 
     private double cashAmount;
-    private LocalDateTime lastModified;
 
     //assetId : Transaction
     private Map<String, LinkedList<CryptoTransaction>> nameToTransaction;
@@ -31,7 +30,6 @@ public class VirtualWallet {
 
         this.cashAmount = 0;
         this.nameToTransaction = new HashMap<>();
-        lastModified = LocalDateTime.now();
         CurrencyUpdater.initializeCurrencies();
     }
 
@@ -127,10 +125,9 @@ public class VirtualWallet {
      * if so updates the currencies
      */
     private void updateCurrencyPrice() {
-        Duration duration = Duration.between(lastModified, LocalDateTime.now());
+        Duration duration = Duration.between(CurrencyUpdater.getLastModified(), LocalDateTime.now());
         if (duration.toMinutes() >= TIME_LIMIT) {
             CurrencyUpdater.updateCurrencies();
-            lastModified = LocalDateTime.now();
         }
     }
 

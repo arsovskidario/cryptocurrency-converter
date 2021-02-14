@@ -44,7 +44,7 @@ public class VirtualWalletTest {
     public void testDepositValidCash() {
         wallet.depositCash(22.0);
 
-        assertTrue(Double.compare(22.0, wallet.getWalletCash()) == 0);
+        assertEquals(0, Double.compare(22.0, wallet.getWalletCash()));
     }
 
     @Test
