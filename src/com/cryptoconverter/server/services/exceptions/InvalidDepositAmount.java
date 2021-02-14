@@ -1,4 +1,4 @@
-package com.cryptoconverter.services.exceptions;
+package com.cryptoconverter.server.services.exceptions;
 
 public class InvalidDepositAmount extends IllegalArgumentException {
 

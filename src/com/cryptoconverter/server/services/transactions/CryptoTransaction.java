@@ -1,6 +1,6 @@
-package com.cryptoconverter.services.transactions;
+package com.cryptoconverter.server.services.transactions;
 
-import com.cryptoconverter.services.currency.Currency;
+import com.cryptoconverter.server.services.currency.Currency;
 
 import java.time.LocalDateTime;
 

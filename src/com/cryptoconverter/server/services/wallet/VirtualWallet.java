@@ -1,11 +1,11 @@
-package com.cryptoconverter.services.wallet;
+package com.cryptoconverter.server.services.wallet;
 
-import com.cryptoconverter.services.currency.Currency;
-import com.cryptoconverter.services.currency.CurrencyUpdater;
-import com.cryptoconverter.services.exceptions.CurrencyNotPresentException;
-import com.cryptoconverter.services.exceptions.InsufficientCashForPurchaseException;
-import com.cryptoconverter.services.exceptions.InvalidDepositAmount;
-import com.cryptoconverter.services.transactions.CryptoTransaction;
+import com.cryptoconverter.server.services.currency.Currency;
+import com.cryptoconverter.server.services.currency.CurrencyUpdater;
+import com.cryptoconverter.server.services.exceptions.CurrencyNotPresentException;
+import com.cryptoconverter.server.services.exceptions.InsufficientCashForPurchaseException;
+import com.cryptoconverter.server.services.exceptions.InvalidDepositAmount;
+import com.cryptoconverter.server.services.transactions.CryptoTransaction;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

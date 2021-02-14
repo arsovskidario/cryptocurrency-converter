@@ -1,8 +1,8 @@
-package com.cryptoconverter.services.wallet;
+package com.cryptoconverter.server.services.wallet;
 
-import com.cryptoconverter.services.exceptions.CurrencyNotPresentException;
-import com.cryptoconverter.services.exceptions.InsufficientCashForPurchaseException;
-import com.cryptoconverter.services.exceptions.InvalidDepositAmount;
+import com.cryptoconverter.server.services.exceptions.CurrencyNotPresentException;
+import com.cryptoconverter.server.services.exceptions.InsufficientCashForPurchaseException;
+import com.cryptoconverter.server.services.exceptions.InvalidDepositAmount;
 import org.junit.After;
 import org.junit.Test;
 

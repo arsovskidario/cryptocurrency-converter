@@ -1,6 +1,6 @@
-package com.cryptoconverter.services.currency;
+package com.cryptoconverter.server.services.currency;
 
-import com.cryptoconverter.services.exceptions.CurrencyNotPresentException;
+import com.cryptoconverter.server.services.exceptions.CurrencyNotPresentException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

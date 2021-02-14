@@ -1,4 +1,4 @@
-package com.cryptoconverter.services.currency;
+package com.cryptoconverter.server.services.currency;
 
 public class CurrencyData {
 
