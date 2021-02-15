@@ -8,15 +8,21 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 
 public class Server {
     //TODO: Save user data to File
     // Save CurrencyUpdate and time modified to file
+
+    private static Logger logger = Logger.getLogger(Server.class.getName());
+    private static FileHandler fileHandler = null;
+
     private int port;
     private static final String HOST_NAME = "localhost";
 
@@ -35,6 +41,12 @@ public class Server {
 
     public void start() {
         try (ServerSocketChannel serverChannel = ServerSocketChannel.open();) {
+            SimpleDateFormat format = new SimpleDateFormat("M-d_HHmmss");
+            fileHandler = new FileHandler("server" + format.format(Calendar.getInstance().getTime()) + ".txt");
+            fileHandler.setFormatter(new SimpleFormatter());
+            logger.addHandler(fileHandler);
+
+
             serverChannel.bind(new InetSocketAddress(HOST_NAME, port));
             serverChannel.configureBlocking(false);
 
@@ -116,12 +128,17 @@ public class Server {
     }
 
     public void stop() {
+        fileHandler.close();
         this.isRunning = false;
         try {
             selector.close();
         } catch (IOException e) {
             System.out.println("Failed to close selector " + e);
         }
+    }
+
+    public static void writeToLogger(Exception e) {
+        logger.log(Level.SEVERE, e.toString(), e);
     }
 
 

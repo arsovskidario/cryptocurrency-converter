@@ -1,0 +1,27 @@
+Feb 15, 2021 3:09:48 AM com.cryptoconverter.server.Server writeToLogger
+SEVERE: com.cryptoconverter.server.services.exceptions.InsufficientCashForPurchaseException: Not enough money to buy currency
+com.cryptoconverter.server.services.exceptions.InsufficientCashForPurchaseException: Not enough money to buy currency
+	at com.cryptoconverter.server.services.wallet.VirtualWallet.buyCurrency(VirtualWallet.java:102)
+	at com.cryptoconverter.server.ClientManager.buyCurrency(ClientManager.java:99)
+	at com.cryptoconverter.server.CommandParser.parseInput(CommandParser.java:117)
+	at com.cryptoconverter.server.Server.start(Server.java:104)
+	at com.cryptoconverter.server.DemoServer.main(DemoServer.java:6)
+
+Feb 15, 2021 3:10:01 AM com.cryptoconverter.server.Server writeToLogger
+SEVERE: com.cryptoconverter.server.services.exceptions.InvalidDepositAmount: Can't have negative cash deposited!
+com.cryptoconverter.server.services.exceptions.InvalidDepositAmount: Can't have negative cash deposited!
+	at com.cryptoconverter.server.services.wallet.VirtualWallet.buyCurrency(VirtualWallet.java:98)
+	at com.cryptoconverter.server.ClientManager.buyCurrency(ClientManager.java:99)
+	at com.cryptoconverter.server.CommandParser.parseInput(CommandParser.java:117)
+	at com.cryptoconverter.server.Server.start(Server.java:104)
+	at com.cryptoconverter.server.DemoServer.main(DemoServer.java:6)
+
+Feb 15, 2021 3:10:48 AM com.cryptoconverter.server.Server writeToLogger
+SEVERE: com.cryptoconverter.server.services.exceptions.InvalidSellingAmount: Can't have negative amount of currency sold !
+com.cryptoconverter.server.services.exceptions.InvalidSellingAmount: Can't have negative amount of currency sold !
+	at com.cryptoconverter.server.services.wallet.VirtualWallet.sellCurrency(VirtualWallet.java:58)
+	at com.cryptoconverter.server.ClientManager.sellCurrency(ClientManager.java:106)
+	at com.cryptoconverter.server.CommandParser.parseInput(CommandParser.java:152)
+	at com.cryptoconverter.server.Server.start(Server.java:104)
+	at com.cryptoconverter.server.DemoServer.main(DemoServer.java:6)
+

@@ -5,6 +5,7 @@ import com.cryptoconverter.server.services.currency.CurrencyUpdater;
 import com.cryptoconverter.server.services.exceptions.CurrencyNotPresentException;
 import com.cryptoconverter.server.services.exceptions.InsufficientCashForPurchaseException;
 import com.cryptoconverter.server.services.exceptions.InvalidDepositAmount;
+import com.cryptoconverter.server.services.exceptions.InvalidSellingAmount;
 import com.cryptoconverter.server.services.transactions.CryptoTransaction;
 
 import java.time.Duration;
@@ -54,7 +55,7 @@ public class VirtualWallet {
 
     public void sellCurrency(double sellAmount, String currencyName) {
         if (sellAmount < 0) {
-            throw new IllegalArgumentException("Invalid amount!");
+            throw new InvalidSellingAmount();
         }
 
         if (!nameToTransaction.containsKey(currencyName)) {

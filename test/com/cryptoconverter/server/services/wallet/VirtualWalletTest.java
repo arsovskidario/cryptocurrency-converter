@@ -128,7 +128,7 @@ public class VirtualWalletTest {
 
 
     @Test
-    public void testGetWalletOVerallSummary() {
+    public void testGetWalletOverallSummary() {
         wallet.depositCash(150);
         wallet.buyCurrency(75, "BTC");
         String[] lines = wallet.getWalletOverallSummary().split(System.lineSeparator());

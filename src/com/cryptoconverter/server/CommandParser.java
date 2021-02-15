@@ -2,6 +2,8 @@ package com.cryptoconverter.server;
 
 import com.cryptoconverter.server.services.exceptions.CurrencyNotPresentException;
 import com.cryptoconverter.server.services.exceptions.InsufficientCashForPurchaseException;
+import com.cryptoconverter.server.services.exceptions.InvalidDepositAmount;
+import com.cryptoconverter.server.services.exceptions.InvalidSellingAmount;
 
 import java.nio.channels.SocketChannel;
 import java.util.List;
@@ -104,7 +106,7 @@ class CommandParser {
 
                     String name = input.get(1).split("=")[1];
                     String numberAmount = input.get(2).split("=")[1];
-                    if (!numberAmount.matches("^[0-9\\.]*$")) {
+                    if (!numberAmount.matches("^[\\-]?[0-9\\.]*$")) {
                         serverResponse = "[ Invalid arguments ]";
                         break;
                     }
@@ -114,7 +116,11 @@ class CommandParser {
                     try {
                         serverResponse = ClientManager.buyCurrency(channel, name, amount);
                     } catch (InsufficientCashForPurchaseException e) {
+                        Server.writeToLogger(e);
                         serverResponse = "[ Insufficient cash amount for purchase ]";
+                    } catch (InvalidDepositAmount e) {
+                        Server.writeToLogger(e);
+                        serverResponse = "[ Invalid cash amount entered ]";
                     }
 
                 } else {
@@ -136,7 +142,7 @@ class CommandParser {
 
                     String name = input.get(1).split("=")[1];
                     String numberAmount = input.get(2).split("=")[1];
-                    if (!numberAmount.matches("^[0-9\\.]*$")) {
+                    if (!numberAmount.matches("^[\\-]?[0-9\\.]*$")) {
                         serverResponse = "[ Invalid arguments ]";
                         break;
                     }
@@ -145,7 +151,11 @@ class CommandParser {
                     try {
                         serverResponse = ClientManager.sellCurrency(channel, name, amount);
                     } catch (CurrencyNotPresentException e) {
+                        Server.writeToLogger(e);
                         serverResponse = "[ Currency is not present in your wallet ]";
+                    } catch (InvalidSellingAmount e) {
+                        Server.writeToLogger(e);
+                        serverResponse = "[  Can't have negative amount of currency sold ! ]";
                     }
                 } else {
                     serverResponse = "[ You are not logged in! ]";
